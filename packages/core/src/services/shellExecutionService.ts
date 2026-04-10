@@ -18,6 +18,7 @@ import {
   getShellConfiguration,
   resolveExecutable,
   type ShellType,
+  ensurePowerShellUtf8Encoding,
 } from '../utils/shell-utils.js';
 import { isBinary, truncateString } from '../utils/textUtils.js';
 import pkg from '@xterm/headless';
@@ -415,7 +416,8 @@ export class ShellExecutionService {
     const resolvedExecutable =
       (await resolveExecutable(executable)) ?? executable;
 
-    const guardedCommand = ensurePromptvarsDisabled(commandToExecute, shell);
+    let guardedCommand = ensurePromptvarsDisabled(commandToExecute, shell);
+    guardedCommand = ensurePowerShellUtf8Encoding(guardedCommand, shell);
     const spawnArgs = [...argsPrefix, guardedCommand];
 
     // 2. Prepare Environment
