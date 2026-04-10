@@ -229,6 +229,14 @@ export function escapeAnsiCtrlCodes<T>(obj: T): T {
     return obj;
   }
 
+  if (
+    obj instanceof Uint8Array ||
+    obj instanceof ArrayBuffer ||
+    (typeof Buffer !== 'undefined' && Buffer.isBuffer(obj))
+  ) {
+    return obj; // Skip parsing raw binary arrays to avoid event-loop freeze
+  }
+
   if (Array.isArray(obj)) {
     let newArr: unknown[] | null = null;
 
